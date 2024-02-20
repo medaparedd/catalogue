@@ -43,9 +43,13 @@ options {
                 
             }
         }
-        stage('Test') {
+        stage('build') {
             steps {
-                echo 'Testing..'
+                sh """
+                ls -la
+                zip -r catalogue.zip ./* -x ".git" -x "*.zip"
+                ls -ltr
+                """
             }
         }
         stage('Deploy') {
