@@ -6,6 +6,7 @@ pipeline {
 }
    environment { 
         packageVersion = ''
+        nexusURL = '172.31.15.229:8081'
     }
 options {
         timeout(time: 1, unit: 'HOURS')
@@ -26,20 +27,21 @@ options {
     stages {
         stage('get the version') {
             steps {
-                sh """
-                npm install
-                """
-                
-            }
-        }
-
-        stage('install dependencies') {
-            steps {
                 script {
                     def packageJson = readJSON file: 'package.json'
                     packageVersion = packageJson.version
                     echo "application version: $packageVersion"
                 }
+            
+        }
+        }
+
+        stage('install dependencies') {
+            steps {
+                sh """
+                npm install
+                """
+                
                 
             }
         }
@@ -50,6 +52,25 @@ options {
                 zip -r catalogue.zip ./* -x ".git" -x "*.zip"
                 ls -ltr
                 """
+            }
+        }
+        stage('publish artifact') {
+            steps {
+                 nexusArtifactUploader(
+        nexusVersion: 'nexus3',
+        protocol: 'http',
+        nexusUrl: "${nexusURL}",
+        groupId: 'com.roboshop',
+        version: "${packageVersion}",
+        repository: 'catalogue',
+        credentialsId: 'nexus-auth',
+        artifacts: [
+            [artifactId: 'catalogue',
+             classifier: '',
+             file: 'catalogue.zip',
+             type: 'zip']
+        ]
+     )
             }
         }
         stage('Deploy') {
