@@ -6,7 +6,7 @@ pipeline {
 }
    environment { 
         packageVersion = ''
-        nexusURL = '172.31.15.229:8081'
+        nexusURL = ':8081'
     }
 options {
         timeout(time: 1, unit: 'HOURS')
@@ -102,6 +102,7 @@ options {
 post { 
         always { 
             echo 'I will always say Hello again!'
+            deleteDir()
         }
         failure {
             echo 'i will alert you,when pipeline is failed'
