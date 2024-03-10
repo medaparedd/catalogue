@@ -6,7 +6,7 @@ pipeline {
 }
    environment { 
         packageVersion = ''
-        nexusURL = '172.31.11.36:8081'
+        nexusURL = '3.233.237.195:8081'
     }
 options {
         timeout(time: 1, unit: 'HOURS')
@@ -55,7 +55,7 @@ options {
             }
         }
 
-        stage('publish the artifact') {
+        stage('Publish Artifact') {
             steps {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
